@@ -73,10 +73,13 @@ const { error: insertError } = await supabase
   });
 
 if (insertError) {
-  alert(insertError.message);
+  console.error("Insert Error:", insertError);
+  alert(JSON.stringify(insertError, null, 2));
   setLoading(false);
   return;
 }
+
+console.log("Inserted profile successfully:", user.id);
 
 alert(
   "Account created successfully!\n\nPlease verify your email before logging in."
