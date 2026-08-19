@@ -62,7 +62,8 @@ export default function BusinessForm() {
 
 const user = data.user;
 
-const { error: insertError } = await supabase
+
+const { data: insertedUser, error: insertError } = await supabase
   .from("users")
   .insert({
     id: user.id,
@@ -70,14 +71,20 @@ const { error: insertError } = await supabase
     company_name: form.businessName,
     email: form.email,
     business_type: form.businessType,
-  });
+  })
+  .select();
+
+console.log("Inserted User:", insertedUser);
+console.log("Insert Error:", insertError);
 
 if (insertError) {
-  console.error("Insert Error:", insertError);
   alert(JSON.stringify(insertError, null, 2));
   setLoading(false);
   return;
 }
+
+console.log("Inserted profile successfully:", user.id);
+
 
 console.log("Inserted profile successfully:", user.id);
 
@@ -86,14 +93,8 @@ alert(
 );
 
 router.push("/login");
-
-
-alert(
-  "Account created successfully!\n\nPlease verify your email before logging in."
-);
-
-router.push("/login");
 return;
+
 
       // Save business name locally until dashboard reads from DB
       sessionStorage.setItem("companyName", form.businessName);
