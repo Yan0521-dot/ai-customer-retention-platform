@@ -275,3 +275,33 @@ Unlike traditional dashboards that only visualize customer data, our platform:
 # 📄 License
 
 This project was developed for the **TalentLabs Hackathon 2026** for educational and demonstration purposes.
+
+
+## 📸 Screenshots
+
+### Landing Page
+![Landing Page](screenshots/landing-page.png)
+
+### Features
+![Features](screenshots/features.png)
+
+### Business Registration
+![Business Registration](screenshots/business-registration.png)
+
+### Upload Customer Dataset
+![Upload CSV](screenshots/upload-csv.png)
+
+### AI Analysis Results
+![AI Analysis](screenshots/ai-analysis.png)
+
+### Business Dashboard
+![Dashboard](screenshots/dashboard.png)
+
+### Partner Registration
+![Partner Registration](screenshots/partner-registration.png)
+
+### Partner Dashboard
+![Partner Dashboard](screenshots/partner-dashboard.png)
+
+### AI Recommendations
+![Recommendations](screenshots/recommendations.png)
