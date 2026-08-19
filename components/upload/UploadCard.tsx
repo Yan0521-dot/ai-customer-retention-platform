@@ -66,8 +66,26 @@ export default function UploadCard() {
         data: { user },
       } = await supabase.auth.getUser();
 
+      console.log("Auth User:", user);
+
       if (!user) {
         alert("Please login first.");
+        setLoading(false);
+        return;
+      }
+
+      // Check matching profile
+      const { data: profile, error: profileError } = await supabase
+        .from("users")
+        .select("*")
+        .eq("id", user.id)
+        .single();
+
+      console.log("Matching Profile:", profile);
+      console.log("Profile Error:", profileError);
+
+      if (!profile) {
+        alert("No matching user found in public.users");
         setLoading(false);
         return;
       }
@@ -76,12 +94,15 @@ export default function UploadCard() {
       const { data: upload, error: uploadError } = await supabase
         .from("uploads")
         .insert({
-          user_id: user.id,
+          user_id: profile.id,
           filename: file.name,
           csv_data: parsed.data,
         })
         .select()
         .single();
+
+      console.log("Upload:", upload);
+      console.log("Upload Error:", uploadError);
 
       if (uploadError) {
         console.error(uploadError);
@@ -107,7 +128,7 @@ export default function UploadCard() {
         return;
       }
 
-      // Save every AI result
+      // Save AI results
       const customerRows = json.data.customers.map((customer: any) => ({
         analysis_id: analysis.id,
         customer_name: customer.name,
@@ -128,7 +149,6 @@ export default function UploadCard() {
         return;
       }
 
-      // Temporary compatibility while dashboard is migrated
       sessionStorage.setItem(
         "uploadedCSV",
         JSON.stringify(parsed.data)
@@ -151,7 +171,6 @@ export default function UploadCard() {
       setTimeout(() => {
         router.push("/dashboard");
       }, 4200);
-
     } catch (err) {
       console.error(err);
       alert("Something went wrong while analysing the CSV.");
@@ -162,7 +181,6 @@ export default function UploadCard() {
   return (
     <div className="max-w-3xl mx-auto mt-20">
       <div className="rounded-3xl border border-slate-800 bg-slate-900 p-12">
-
         <UploadCloud
           size={70}
           className="mx-auto text-cyan-400"
@@ -201,7 +219,6 @@ export default function UploadCard() {
 
         {loading && (
           <div className="mt-10 rounded-2xl border border-slate-700 bg-slate-950 p-6">
-
             <div className="flex items-center gap-3">
               <div className="h-4 w-4 rounded-full bg-cyan-400 animate-ping"></div>
 
@@ -221,10 +238,8 @@ export default function UploadCard() {
             <p className="mt-2 text-slate-500">
               Please wait while our AI analyses your customer data...
             </p>
-
           </div>
         )}
-
       </div>
     </div>
   );
