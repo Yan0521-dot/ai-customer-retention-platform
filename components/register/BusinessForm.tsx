@@ -59,21 +59,38 @@ export default function BusinessForm() {
         return;
       }
 
-sessionStorage.setItem(
-  "pendingProfile",
-  JSON.stringify({
+
+const user = data.user;
+
+const { error: insertError } = await supabase
+  .from("users")
+  .insert({
+    id: user.id,
     full_name: form.owner,
     company_name: form.businessName,
-    business_type: form.businessType,
     email: form.email,
-  })
-);
+    business_type: form.businessType,
+  });
+
+if (insertError) {
+  alert(insertError.message);
+  setLoading(false);
+  return;
+}
 
 alert(
-  "Account created successfully!\n\nWe've sent a verification email. Please verify your email, then log in."
+  "Account created successfully!\n\nPlease verify your email before logging in."
 );
 
 router.push("/login");
+
+
+alert(
+  "Account created successfully!\n\nPlease verify your email before logging in."
+);
+
+router.push("/login");
+return;
 
       // Save business name locally until dashboard reads from DB
       sessionStorage.setItem("companyName", form.businessName);

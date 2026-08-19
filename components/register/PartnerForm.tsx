@@ -47,10 +47,14 @@ export default function PartnerForm() {
 
     setLoading(true);
 
-    const { error } = await supabase.auth.signUp({
-      email,
-      password,
-    });
+
+const { data, error } = await supabase.auth.signUp({
+  email,
+  password,
+});
+
+
+const user = data.user;
 
     if (error) {
       alert(error.message);
@@ -58,25 +62,31 @@ export default function PartnerForm() {
       return;
     }
 
-    sessionStorage.setItem(
-      "pendingPartner",
-      JSON.stringify({
-        business_name: businessName,
-        category: businessType,
-        website,
-        description,
-        owner_name: ownerName,
-        ic_number: icNumber,
-        email,
-      })
-    );
+const { error: partnerError } = await supabase
+  .from("partners")
+  .insert({
+    id: user.id,
+    business_name: businessName,
+    category: businessType,
+    website,
+    description,
+    owner_name: ownerName,
+    ic_number: icNumber,
+    email,
+  });
 
-    alert(
-      "Account created successfully!\n\nPlease verify your email, then log in."
-    );
+if (partnerError) {
+  alert(partnerError.message);
+  setLoading(false);
+  return;
+}
 
-   router.push("/login");
-  }
+alert(
+  "Account created successfully!\n\nPlease verify your email before logging in."
+);
+
+router.push("/login");
+}
 
   return (
     <div className="mt-8 rounded-3xl border border-slate-800 bg-slate-900 p-8">
