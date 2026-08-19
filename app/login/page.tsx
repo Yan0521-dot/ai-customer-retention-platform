@@ -31,32 +31,6 @@ async function login() {
     return;
   }
 
-  // -----------------------------
-  // Save pending BUSINESS profile
-  // -----------------------------
-  const pendingProfile = sessionStorage.getItem("pendingProfile");
-
-  if (pendingProfile) {
-    const profile = JSON.parse(pendingProfile);
-
-    const { error: dbError } = await supabase
-      .from("users")
-      .upsert({
-        id: data.user.id,
-        full_name: profile.full_name,
-        company_name: profile.company_name,
-        business_type: profile.business_type,
-        email: profile.email,
-      });
-
-    if (dbError) {
-      alert(dbError.message);
-      setLoading(false);
-      return;
-    }
-
-    sessionStorage.removeItem("pendingProfile");
-  }
 
   // -----------------------------
   // Save pending PARTNER profile

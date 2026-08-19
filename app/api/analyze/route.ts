@@ -59,10 +59,13 @@ Customer Data:
 ${JSON.stringify(customers)}
 `;
 
-    const response = await ai.models.generateContent({
-      model: "gemini-2.5-flash",
-      contents: prompt,
-    });
+console.log("API key loaded:", !!process.env.GEMINI_API_KEY);
+console.log("API key length:", process.env.GEMINI_API_KEY?.length);
+
+const response = await ai.models.generateContent({
+  model: "gemini-3.6-flash",
+  contents: prompt,
+});
 
     const text = response.text!
       .replace(/```json/g, "")
