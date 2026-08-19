@@ -212,31 +212,6 @@ http://localhost:3000
 
 ---
 
-# 📷 Screenshots
-
-## Landing Page
-
-![Landing Page](screenshots/landing.png)
-
----
-
-## Dashboard
-
-![Dashboard](screenshots/dashboard.png)
-
----
-
-## AI Analysis
-
-![AI Analysis](screenshots/analysis.png)
-
----
-
-## Partner Dashboard
-
-![Partner Dashboard](screenshots/partner-dashboard.png)
-
----
 
 # 👥 Team Members
 
