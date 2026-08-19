@@ -298,7 +298,7 @@ This project was developed for the **TalentLabs Hackathon 2026** for educational
 ![Dashboard](screenshots/dashboard.png)
 
 ### Partner Registration
-![Partner Registration](screenshots/partner-registration.png)
+![Customers with Ai explanation](screenshots/partner-registration.png)
 
 ### Partner Dashboard
 ![Partner Dashboard](screenshots/partner-dashboard.png)
