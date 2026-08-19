@@ -11,60 +11,103 @@ export default function LoginPage() {
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
 
-  async function login() {
-    setLoading(true);
+async function login() {
+  setLoading(true);
 
-    const { data, error } = await supabase.auth.signInWithPassword({
-      email,
-      password,
-    });
+  const { data, error } = await supabase.auth.signInWithPassword({
+    email,
+    password,
+  });
 
-    if (error) {
-      alert(error.message);
+  if (error) {
+    alert(error.message);
+    setLoading(false);
+    return;
+  }
+
+  if (!data.user) {
+    alert("Unable to login.");
+    setLoading(false);
+    return;
+  }
+
+  // -----------------------------
+  // Save pending BUSINESS profile
+  // -----------------------------
+  const pendingProfile = sessionStorage.getItem("pendingProfile");
+
+  if (pendingProfile) {
+    const profile = JSON.parse(pendingProfile);
+
+    const { error: dbError } = await supabase
+      .from("users")
+      .upsert({
+        id: data.user.id,
+        full_name: profile.full_name,
+        company_name: profile.company_name,
+        business_type: profile.business_type,
+        email: profile.email,
+      });
+
+    if (dbError) {
+      alert(dbError.message);
       setLoading(false);
       return;
     }
 
-    // First-time business registration flow
-    const pending = sessionStorage.getItem("pendingProfile");
-
-    if (pending && data.user) {
-      const profile = JSON.parse(pending);
-
-      const { error: dbError } = await supabase
-        .from("users")
-        .upsert({
-          id: data.user.id,
-          full_name: profile.full_name,
-          company_name: profile.company_name,
-          business_type: profile.business_type,
-          email: profile.email,
-        });
-
-      if (dbError) {
-        alert(dbError.message);
-        setLoading(false);
-        return;
-      }
-
-      sessionStorage.removeItem("pendingProfile");
-    }
-
-    // Check if this user is a partner
-    const { data: partner } = await supabase
-      .from("partners")
-      .select("id")
-      .eq("email", data.user.email)
-      .maybeSingle();
-
-    setLoading(false);
-
-    if (partner) {
-      router.push("/partner");
-    } else {
-      router.push("/upload");
-    }
+    sessionStorage.removeItem("pendingProfile");
   }
+
+  // -----------------------------
+  // Save pending PARTNER profile
+  // -----------------------------
+  const pendingPartner = sessionStorage.getItem("pendingPartner");
+
+  if (pendingPartner) {
+    const partner = JSON.parse(pendingPartner);
+
+    const { error: partnerError } = await supabase
+      .from("partners")
+      .insert({
+        business_name: partner.business_name,
+        category: partner.category,
+        website: partner.website,
+        description: partner.description,
+        owner_name: partner.owner_name,
+        email: partner.email,
+        verified: true,
+      });
+
+    if (partnerError) {
+      console.error(partnerError);
+    }
+
+    sessionStorage.removeItem("pendingPartner");
+  }
+
+  // -----------------------------
+  // Check partner account
+  // -----------------------------
+  const { data: partnerData, error: checkError } = await supabase
+    .from("partners")
+    .select("*")
+    .eq("email", data.user.email)
+    .maybeSingle();
+
+  console.log("Logged in email:", data.user.email);
+  console.log("Partner found:", partnerData);
+  console.log("Partner error:", checkError);
+
+  setLoading(false);
+
+  if (partnerData) {
+    console.log("Redirecting -> /partner");
+    router.push("/partner");
+  } else {
+    console.log("Redirecting -> /upload");
+    router.push("/upload");
+  }
+}
 
   return (
     <main className="min-h-screen bg-slate-950 flex items-center justify-center p-6">
