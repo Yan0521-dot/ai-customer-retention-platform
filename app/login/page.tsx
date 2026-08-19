@@ -11,35 +11,41 @@ export default function LoginPage() {
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
 
-async function login() {
-  setLoading(true);
+  async function login() {
+    setLoading(true);
 
-  const { data, error } = await supabase.auth.signInWithPassword({
-    email,
-    password,
-  });
+    const { data, error } = await supabase.auth.signInWithPassword({
+      email,
+      password,
+    });
 
-  if (error) {
-    alert(error.message);
-    setLoading(false);
-    return;
-  }
+    if (error) {
+      alert(error.message);
+      setLoading(false);
+      return;
+    }
 
-  if (!data.user) {
-    alert("Unable to login.");
-    setLoading(false);
-    return;
-  }
+    if (!data.user) {
+      alert("Unable to login.");
+      setLoading(false);
+      return;
+    }
 
+    // ----------------------------------------
+    // Save pending partner (only once)
+    // ----------------------------------------
+    const pendingPartner = sessionStorage.getItem("pendingPartner");
 
-  // -----------------------------
-  // Save pending PARTNER profile
-  // -----------------------------
-  const pendingPartner = sessionStorage.getItem("pendingPartner");
+if (pendingPartner) {
+  const partner = JSON.parse(pendingPartner);
 
-  if (pendingPartner) {
-    const partner = JSON.parse(pendingPartner);
+  const { data: existingPartner } = await supabase
+    .from("partners")
+    .select("id")
+    .eq("email", partner.email)
+    .maybeSingle();
 
+  if (!existingPartner) {
     const { error: partnerError } = await supabase
       .from("partners")
       .insert({
@@ -55,33 +61,32 @@ async function login() {
     if (partnerError) {
       console.error(partnerError);
     }
-
-    sessionStorage.removeItem("pendingPartner");
   }
 
-  // -----------------------------
-  // Check partner account
-  // -----------------------------
-  const { data: partnerData, error: checkError } = await supabase
-    .from("partners")
-    .select("*")
-    .eq("email", data.user.email)
-    .maybeSingle();
-
-  console.log("Logged in email:", data.user.email);
-  console.log("Partner found:", partnerData);
-  console.log("Partner error:", checkError);
-
-  setLoading(false);
-
-  if (partnerData) {
-    console.log("Redirecting -> /partner");
-    router.push("/partner");
-  } else {
-    console.log("Redirecting -> /upload");
-    router.push("/upload");
-  }
+  sessionStorage.removeItem("pendingPartner");
 }
+ 
+
+    // ----------------------------------------
+    // Check if this user is a partner
+    // ----------------------------------------
+    const { data: partners, error: checkError } = await supabase
+      .from("partners")
+      .select("*")
+      .eq("email", data.user.email);
+
+    console.log("Logged in email:", data.user.email);
+    console.log("Partners:", partners);
+    console.log("Partner error:", checkError);
+
+    setLoading(false);
+
+    if (partners && partners.length > 0) {
+      router.push("/partner");
+    } else {
+      router.push("/upload");
+    }
+  }
 
   return (
     <main className="min-h-screen bg-slate-950 flex items-center justify-center p-6">

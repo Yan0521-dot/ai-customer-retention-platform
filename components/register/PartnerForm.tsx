@@ -47,14 +47,11 @@ export default function PartnerForm() {
 
     setLoading(true);
 
-
-const { data, error } = await supabase.auth.signUp({
-  email,
-  password,
-});
-
-
-const user = data.user;
+    // Create auth account
+    const { data, error } = await supabase.auth.signUp({
+      email,
+      password,
+    });
 
     if (error) {
       alert(error.message);
@@ -62,35 +59,56 @@ const user = data.user;
       return;
     }
 
-const { error: partnerError } = await supabase
-  .from("partners")
-  .insert({
-    id: user.id,
-    business_name: businessName,
-    category: businessType,
-    website,
-    description,
-    owner_name: ownerName,
-    ic_number: icNumber,
-    email,
-  });
+    if (!data.user) {
+      alert("Unable to create user.");
+      setLoading(false);
+      return;
+    }
 
-if (partnerError) {
-  alert(partnerError.message);
-  setLoading(false);
-  return;
+    // Prevent duplicate partner records
+    const { data: existingPartner } = await supabase
+      .from("partners")
+      .select("id")
+      .eq("email", email)
+      .maybeSingle();
+
+if (!existingPartner) {
+  const { data: insertedPartner, error: partnerError } = await supabase
+    .from("partners")
+    .insert({
+      id: data.user.id,
+      business_name: businessName,
+      category: businessType,
+      website,
+      description,
+      owner_name: ownerName,
+      email,
+      verified: true,
+    })
+    .select();
+
+  console.log("Inserted partner:", insertedPartner);
+  console.log("Partner insert error:", partnerError);
+
+  if (partnerError) {
+    console.error(partnerError);
+    alert(partnerError.message);
+    setLoading(false);
+    return;
+  }
 }
+ 
+   setLoading(false);
 
-alert(
-  "Account created successfully!\n\nPlease verify your email before logging in."
-);
+    alert(
+      "Account created successfully!\n\nPlease verify your email before logging in."
+    );
 
-router.push("/login");
-}
+    router.push("/login");
+  }
 
   return (
     <div className="mt-8 rounded-3xl border border-slate-800 bg-slate-900 p-8">
-
       <h2 className="text-3xl font-bold">
         Become a Solution Provider
       </h2>
@@ -180,7 +198,6 @@ router.push("/login");
       >
         {loading ? "Creating Account..." : "Register as Partner"}
       </button>
-
     </div>
   );
 }
