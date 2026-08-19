@@ -232,7 +232,9 @@ Add screenshot here.
 # 👥 Team Members
 
 - **Aathityan**
-- **Yan**
+- **Amira**
+- **Hamesh**
+- **Omar**
 
 ---
 
