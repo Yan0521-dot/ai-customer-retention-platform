@@ -109,9 +109,6 @@ Businesses receive recommendations based on their AI analysis results.
 
 ## ☁ Cloud Database
 
-
-Built with Supabase for:
-📂 Project Structure
 app/
 ├── api/
 ├── dashboard/
@@ -120,12 +117,12 @@ app/
 ├── register/
 ├── upload/
 
-
 components/
 lib/
 public/
 screenshots/
-🚀 Installation
+
+
 
 Clone the repository
 
