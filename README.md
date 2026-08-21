@@ -172,45 +172,113 @@ screenshots/
 
 # 🚀 Installation
 
-### Clone the repository
+### 1. Clone the repository
 
 ```bash
 git clone https://github.com/Yan0521-dot/ai-customer-retention-platform.git
 ```
 
-### Navigate into the project
+### 2. Navigate into the project
 
 ```bash
 cd ai-customer-retention-platform
 ```
 
-### Install dependencies
+### 3. Install dependencies
 
 ```bash
 npm install
 ```
 
-### Create a `.env.local` file
+---
+
+# ⚙️ Supabase Setup
+
+### 1. Create a Supabase project
+
+Visit:
+
+https://supabase.com
+
+Create a new project.
+
+---
+
+### 2. Create the required database tables
+
+Inside your Supabase project:
+
+- Create a **customers** table
+- Create a **partners** table
+
+Configure the required columns based on the project source code.
+
+---
+
+
+
+### 3. Obtain your API Keys
+
+Navigate to:
+
+Project Settings → API
+
+Copy the following:
+
+- Project URL
+- Publishable (Anon) Key
+
+These will be used inside the `.env.local` file.
+
+---
+
+# 🤖 Google Gemini API Setup
+
+### 1. Create a Gemini API Key
+
+Visit:
+
+https://aistudio.google.com/
+
+Sign in with your Google account.
+
+---
+
+### 2. Generate an API Key
+
+Create a new API key for your project.
+
+Copy the generated API key.
+
+---
+
+# 🔑 Environment Variables
+
+Create a `.env.local` file in the project root.
 
 ```env
-NEXT_PUBLIC_SUPABASE_URL=your_supabase_url
+NEXT_PUBLIC_SUPABASE_URL=your_supabase_project_url
+
 NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY=your_supabase_publishable_key
+
 GEMINI_API_KEY=your_gemini_api_key
 ```
 
-### Start the development server
+---
+
+### 4. Start the development server
 
 ```bash
 npm run dev
 ```
 
-### Open your browser
+---
 
-```text
+### 5. Open your browser
+
+```
 http://localhost:3000
 ```
-
----
 
 
 # 👥 Team Members
