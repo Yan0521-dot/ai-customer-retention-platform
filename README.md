@@ -117,7 +117,8 @@ Built using **Supabase** for:
 
 ## Deployment
 
-* Vercel
+* Render
+  https://ai-customer-retention-platform.onrender.com/
 
 ---
 
