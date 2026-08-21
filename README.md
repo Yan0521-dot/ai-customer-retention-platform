@@ -2,7 +2,7 @@
 
 An AI-powered customer retention platform that helps businesses identify customers at risk of churning and connects them with verified solution partners to improve customer retention.
 
-Built during the **TalentLabs Hackathon 2026**.
+Built during the **TalentLabs Hackathon 2026 ( LAB 4 )**
 
 ---
 
