@@ -120,6 +120,9 @@ Built using **Supabase** for:
 * Render
   https://ai-customer-retention-platform.onrender.com/
 
+  login info: William@gmail.com
+  pass: William
+
 ---
 
 # 🏗️ System Architecture
